@@ -1,0 +1,7 @@
+secrets/
+*.json
+__pycache__
+*.pyc
+.ipynb_checkpoints
+build/
+*.egg-info

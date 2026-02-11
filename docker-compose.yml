@@ -1,0 +1,9 @@
+services:
+  app:
+    build: .
+    volumes:
+      - .:/app
+      - ./secrets:/secrets  # Maps local secrets to container secrets
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/secrets/gcp-key.json
+      - GOOGLE_CLOUD_PROJECT=projectbdm-487109
