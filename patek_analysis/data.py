@@ -15,7 +15,7 @@ def get_patek_data():
     # Project: projectbdm-487109 | Dataset: patek_data | Table: patek
     query = """
     SELECT *
-    FROM `projectbdm-487109.patek_data.patek`
+    FROM `projectbdm-487109.patek_data.patek_raw`
     """
     
     # 3. Run Query

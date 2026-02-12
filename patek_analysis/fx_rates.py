@@ -11,6 +11,7 @@ PROJECT_ID = os.environ.get("GCP_PROJECT_ID", "").strip()
 BQ_DATASET = os.getenv("BQ_DATASET", "patek_data").strip()
 
 # Construct table names dynamically or use defaults
+# nb it reads from patek (the default). 
 SOURCE_TABLE = os.getenv("SOURCE_TABLE", f"{PROJECT_ID}.{BQ_DATASET}.patek").strip()
 DEST_TABLE = os.getenv("DEST_TABLE", f"{PROJECT_ID}.{BQ_DATASET}.fx_rates").strip()
 
