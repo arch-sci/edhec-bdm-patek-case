@@ -43,14 +43,16 @@ def train_price_predictor():
     # 7. Evaluate
     score = model.score(X_test, y_test)
     print(f"🚀 Model Trained! R2 Score: {score:.2f} (1.0 is perfect)")
-    
+
     # Save predictions to CSV for analysis/dashboard
     df_pred = X_test.copy()
     df_pred['Actual_Price'] = y_test
     df_pred['Predicted_Price'] = model.predict(X_test)
     
-    # Save to root folder
-    df_pred.to_csv("model_predictions.csv", index=False)
+    # Ensure data directory exists
+    os.makedirs("data", exist_ok=True)
+    # Save it in there
+    df_pred.to_csv("data/model_predictions.csv", index=False)
     print("✅ Predictions saved to model_predictions.csv")
     
     return model

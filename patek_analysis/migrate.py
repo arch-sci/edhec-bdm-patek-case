@@ -1,4 +1,4 @@
-# Python script to do push cleaned data to our bigquery
+# Python script to copy the dataset we're given and save it as raw_data, then use the original table to plug info into
 
 
 from google.cloud import bigquery

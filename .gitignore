@@ -1,7 +1,17 @@
-secrets/
-*.json
+build/
+
+# Ignore data files
+data/*.csv
+
+# But keep the folder itself
+!data/.gitkeep
+
+# Ignore junk
+.ipynb_checkpoints
 __pycache__
 *.pyc
-.ipynb_checkpoints
-build/
 *.egg-info
+
+# Ignore secrets
+secrets/
+*.json

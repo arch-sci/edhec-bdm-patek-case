@@ -114,11 +114,15 @@ def main():
         job.result()
         print(f"✅ Loaded {len(df)} rates to {FX_TABLE}")
         
-        # Save CSV for PowerBI (Workaround)
-        pd.DataFrame(rows).to_csv("fx_rates.csv", index=False)
+
+        # Ensure data directory exists
+        os.makedirs("data", exist_ok=True)
+        # Save CSV 
+        pd.DataFrame(rows).to_csv("data/fx_rates.csv", index=False)
         print("✅ Saved fx_rates.csv for PowerBI")
-        
-        # --- NEW STEP: ENRICH BIGQUERY ---
+
+
+        # --- ENRICH BIGQUERY ---
         update_patek_with_eur()
         
     else:

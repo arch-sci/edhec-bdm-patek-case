@@ -36,10 +36,13 @@ def get_patek_data():
 
     print(df.head())
 
-    
-    # Save to CSV
-    output_file = "patek_philippe_data.csv"
+    # Ensure output data directory exists
+    output_dir = "data"
+    os.makedirs(output_dir, exist_ok=True)
+    # Save the csv to data/ folder
+    output_file = os.path.join(output_dir, "patek_philippe_data.csv")
     df.to_csv(output_file, index=False)
+
     
     print(f"✅ Success! Data saved to {output_file}")
     return df
