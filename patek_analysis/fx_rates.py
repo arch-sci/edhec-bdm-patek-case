@@ -82,6 +82,11 @@ def main():
         print(f"✅ Success! Loaded {len(df)} rows to {DEST_TABLE}")
     else:
         print("Warning: No rates collected.")
+    
+    # Save to CSV for PowerBI utilisation (since we have no free PBI-BQ connection)
+    if rows:
+        pd.DataFrame(rows).to_csv("fx_rates.csv", index=False)
+        print("✅ Saved fx_rates.csv for PowerBI")
 
 if __name__ == "__main__":
     main()

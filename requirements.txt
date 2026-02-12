@@ -5,3 +5,6 @@ ipykernel
 scikit-learn
 requests
 pyarrow
+matplotlib
+seaborn
+jupyter
