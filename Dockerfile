@@ -14,8 +14,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 RUN pip install .
 
-# Default Command: This tells Docker: "As soon as you wake up, run the main analysis pipeline."
-CMD ["make", "pipeline"]
+# Default Command: This tells Docker: "As soon as you wake up, run xxxx"
+CMD ["bash"]
 
-# We tried to tell it to run data.py AND model.py .. to show that we can. it worked
+# older versions
+# CMD ["make", "pipeline"]
 # CMD ["sh", "-c", "python -m patek_analysis.data && python -m patek_analysis.model"] 
