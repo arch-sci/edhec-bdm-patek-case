@@ -1,20 +1,29 @@
+# Setup
 install:
 	@pip install -e .
 
-# Runs the main extraction
+# case 1: "Run the full pipeline"
+# Fetches data -> Updates FX -> Trains Model -> Cleans up
+pipeline: data fx model
+	@echo "🚀 Full pipeline complete. Check your CSV files."
+
 data:
 	@python -m patek_analysis.data
 
-# Runs the ML bonus
-model:
-	@python -m patek_analysis.model
-
-# Runs the API extraction 
 fx:
 	@python -m patek_analysis.fx_rates
 
+model:
+	@python -m patek_analysis.model
 
+# case 2: "I want to analyze in a Notebook"
+# Starts Jupyter inside the container, accessible at localhost:8888
+notebook:
+	@jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser --allow-root --NotebookApp.token='' --NotebookApp.password=''
+
+# case 3: "Reset everything"
 clean:
 	@rm -f *.csv
 	@find . -type d -name "__pycache__" -exec rm -rf {} +
-	@echo "🧹 Removed old CSV files and cache. Ready to restart."
+	@find . -type d -name ".ipynb_checkpoints" -exec rm -rf {} +
+	@echo "🧹 Cleaned workspace."

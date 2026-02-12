@@ -3,7 +3,10 @@ services:
     build: .
     volumes:
       - .:/app
-      - ./secrets:/secrets  # Maps local secrets to container secrets
+      - ./secrets:/secrets # Maps local secrets to container secrets
     environment:
       - GOOGLE_APPLICATION_CREDENTIALS=/secrets/gcp-key.json
       - GOOGLE_CLOUD_PROJECT=projectbdm-487109
+      - GCP_PROJECT_ID=projectbdm-487109
+    ports:                # to enable notebooks 
+      - "8888:8888"
