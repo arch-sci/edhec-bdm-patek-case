@@ -10,3 +10,4 @@ seaborn
 jupyter
 pandas-gbq
 google-cloud-bigquery-storage
+pyarrow
