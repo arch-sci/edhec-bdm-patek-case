@@ -1,53 +1,71 @@
 # Patek Philippe Data Engineering Pipeline
 
-A **containerized, reproducible pipeline** that ingests luxury watch data, enriches it with historical exchange rates, and predicts prices using Machine Learning.
+A fully containerized data pipeline that ingests Patek Philippe watch data, enriches prices with historical exchange rates, and optionally trains a Machine Learning model to predict values. Everything is designed for reproducibility, clarity, and cloud-native integration.
 
 ## 🏗 Architecture
+- **BigQuery Storage Layers:**
+  - `patek_raw`: Raw ingestion layer (backup/dirty data)
+  - `patek`: Production table (cleaned & enriched)
+  - `fx_rates`: Historical exchange rates
 
-This project follows a **lakehouse approach** with **Google BigQuery** as the single source of truth.
+- **Pipeline (Dockerized "Portable Data Factory"):**
+  1. **Extraction & Cleaning** — `data.py` pulls raw BigQuery data, sanitizes it, saves CSV snapshot.
+  2. **FX Enrichment** — `fx_rates.py` fetches historical exchange rates, writes enriched table to BigQuery, updates `price_EUR` in-place, saves CSV locally.
+  3. **Modeling (optional)** — `model.py` trains a Random Forest to predict prices, outputs `model_predictions.csv`.
+  4. **Visualization** — Jupyter notebooks for interactive analysis; Looker Studio for real-time dashboards.
 
-- **Storage Layers**
-  - `patek_raw` → Raw ingestion backup
-  - `patek` → Cleaned & enriched production data
-  - `fx_rates` → Historical currency exchange rates
+## 🚀 How to Use
 
-- **Pipeline Steps (Dockerized)**
-  1. **Extraction & Cleaning:** `data.py` pulls raw data from BigQuery and sanitizes it.
-  2. **Enrichment:** `fx_rates.py` fetches historical FX rates via API and updates `price_EUR` in BigQuery.
-  3. **Transformation (SQL):** CTAS strategy merges data efficiently server-side.
-  4. **Modeling:** `model.py` trains a Random Forest to predict watch prices.
-
-## 🚀 Running the Pipeline
-
-### Full Pipeline (Scenario A)
+### Scenario A — Production Run
+Refresh all data, update FX rates, optionally retrain the model:
 ```bash
 docker compose run --rm --service-ports app bash
-```
-Inside the container, execute the pipeline stepwise via python -m patek_analysis.<module> or follow the Presentation Script for guided steps.  
+# Inside container:
+python -m patek_analysis.data
+python -m patek_analysis.fx_rates
+python -m patek_analysis.model  # optional
+exit
+````
 
-### Visual Exploration (Scenario B)
+* CSVs saved locally: `patek_philippe_data.csv`, `fx_rates.csv`, `model_predictions.csv`.
+* BigQuery is updated; container removed automatically.
+
+### Scenario B — Visual Analysis (Notebook)
+
+Explore data or debug interactively:
+
 ```bash
 docker compose run --rm --service-ports app make notebook
 ```
-Then open localhost:8888 in your browser to run Jupyter notebooks.
 
-### Dashboard Updates (Scenario C)
-Looker Studio reads directly from the patek table in BigQuery. Run Scenario A to refresh data; dashboards update automatically—no CSVs required.
+* Opens Jupyter; run notebooks like `fx_visualization.ipynb`.
+* Exit server with Ctrl+C; container removed automatically.
+
+### Scenario C — Dashboard (Looker Studio)
+
+Cloud-native dashboards read directly from BigQuery:
+
+* Setup: Connect Looker Studio to `patek` table.
+* Trigger updates: Run Scenario A; dashboards refresh automatically.
+* No local files or refresh buttons required.
 
 ## 🛠 Tech Stack
-Language: Python 3.12
-Container: Docker & Docker Compose
-Cloud: Google BigQuery
 
-Libraries: Pandas, Scikit-Learn, Google Cloud SDK
+* Python 3.12
+* Docker & Docker Compose
+* Google BigQuery
+* Pandas, Scikit-Learn, Google Cloud SDK
 
-## 📂 Folder Overview
+## 📂 Key Files
 
-patek_analysis/ → Core Python modules (data.py, fx_rates.py, model.py)
-fx_visualization.ipynb → Notebook for exploratory analysis
-dashboard/ → Looker Studio or PowerBI .pbix files
-Makefile → Shortcuts for pipeline steps
-Dockerfile & docker-compose.yml → Container definitions
-secrets/ → Place Google service account keys here
+* `Dockerfile`, `docker-compose.yml`, `Makefile`, `requirements.txt`
+* `patek_analysis/` → `data.py`, `fx_rates.py`, `model.py`
+* `fx_visualization.ipynb`, `dashboard/`
+* `secrets/` → Google service account key
 
-Tip: Always use --rm to prevent orphaned containers. ML runs are optional and safe; no production tables are overwritten automatically.
+**Principles:**
+
+* Manual or Make commands control execution.
+* Docker ensures reproducibility.
+* CI/CD automates FX enrichment; ML is optional and downstream.
+* Users see all outputs; no automatic BigQuery modifications outside the container.
